@@ -49,7 +49,7 @@ def forecasting(
       forecast_list = {date: value for date, value in zip(date_ranges, sobs)}
       return JSONResponse(forecast_list)
     except ValueError as error_mes:
-        if str(error_mes) == "Input the correct format please":
+        if str(error_mes) == "Internal Server Error":
             raise HTTPException(status_code=500, detail="Input the correct format please")
         else:
             raise HTTPException(status_code=404, detail="Wrong pages")
@@ -90,22 +90,22 @@ def predict(
     store_id: str,
     is_event: int =0
     ):
-    # try:
-    features = format_features_predictive(
-        date,
-        item_id,
-        store_id,
-        is_event
-        )
-    obs = pd.DataFrame(features)
-    obs['date'] = pd.to_datetime(obs['date'])
-    obs['day_of_month'] = obs['date'].dt.day
-    obs['month_of_year'] = obs['date'].dt.month
-    obs['day_of_week'] = obs['date'].dt.dayofweek
-    pred = predictive_model(item_id).predict(obs.drop(columns=['date']))
-    return JSONResponse(pred.tolist())
-    # except ValueError as error_mes:
-    #     if str(error_mes) == "Internal Server Error":
-    #         raise HTTPException(status_code=500, detail="Input the correct format please")
-    #     else:
-    #         raise HTTPException(status_code=404, detail="Wrong pages")
+    try:
+      features = format_features_predictive(
+          date,
+          item_id,
+          store_id,
+          is_event
+          )
+      obs = pd.DataFrame(features)
+      obs['date'] = pd.to_datetime(obs['date'])
+      obs['day_of_month'] = obs['date'].dt.day
+      obs['month_of_year'] = obs['date'].dt.month
+      obs['day_of_week'] = obs['date'].dt.dayofweek
+      pred = predictive_model(item_id).predict(obs.drop(columns=['date']))
+      return JSONResponse(pred.tolist())
+    except ValueError as error_mes:
+        if str(error_mes) == "Internal Server Error":
+            raise HTTPException(status_code=500, detail="Input the correct format please")
+        else:
+            raise HTTPException(status_code=404, detail="Wrong pages")
