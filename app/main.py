@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, status
 from starlette.responses import JSONResponse
 from joblib import load
 from datetime import datetime, timedelta
@@ -25,7 +25,7 @@ def read_root():
             "endpoints":["/","/health","/sales/national/","/sales/stores/items/"],
               "input parameters for predicting revenue of an item in a store for a specific date":["date","item_id","store_id"],
               "output format for prdictive model":"Returning predicted sales revenue",
-              "input parameters for forecasting the total revenues for a spevific date":"date in str format of year-month-day",
+              "input parameters for forecasting the total revenues for a spevific date":"date from 2014-01-11 in str format of year-month-day",
               "output format for forecasting model":"Returning next 7 days sales revenues",
               "Github links for project ": "https://github.com/KenUTS/adv_mla_assignment_2",
               "Github links for API ": "https://github.com/KenUTS/alma_api"
@@ -45,8 +45,14 @@ def forecasting(
     sobs = SARI_model.get_prediction(start=date_one, end=date_seven).predicted_mean
     range = pd.date_range(start=date_one, end=date_seven).to_list()
     date_ranges = [str(d.strftime('%Y-%m-%d')) for d in range]
-    forecast_list = {date: value for date, value in zip(date_ranges, sobs)}
-    return JSONResponse(forecast_list)
+    try:
+      forecast_list = {date: value for date, value in zip(date_ranges, sobs)}
+      return JSONResponse(forecast_list)
+    except ValueError as error_mes:
+        if str(error_mes) == "Input the correct format please":
+            raise HTTPException(status_code=500, detail=str(error_mes))
+        else:
+            raise HTTPException(status_code=404, detail="Wrong pages")
 
 def format_features_predictive(
     date: str,
@@ -95,5 +101,11 @@ def predict(
     obs['day_of_month'] = obs['date'].dt.day
     obs['month_of_year'] = obs['date'].dt.month
     obs['day_of_week'] = obs['date'].dt.dayofweek
-    pred = predictive_model(item_id).predict(obs.drop(columns=['date']))
-    return JSONResponse(pred.tolist())
+    try:
+      pred = predictive_model(item_id).predict(obs.drop(columns=['date']))
+      return JSONResponse(pred.tolist())
+    except ValueError as error_mes:
+        if str(error_mes) == "Input the correct format please":
+            raise HTTPException(status_code=500, detail=str(error_mes))
+        else:
+            raise HTTPException(status_code=404, detail="Wrong pages")
