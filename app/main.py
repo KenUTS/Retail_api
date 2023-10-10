@@ -42,7 +42,7 @@ def forecasting(
     date_input = datetime.strptime(date, "%Y-%m-%d")
     date_seven=(date_input + timedelta(days=7)).strftime('%Y-%m-%d')
     date_one=(date_input + timedelta(days=1)).strftime('%Y-%m-%d')
-    sobs = SARI_model.get_prediction(start=date_one, end=date_seven).predicted_mean
+    sobs = SARI_model.get_forecast(start=date_one, end=date_seven).predicted_mean
     range = pd.date_range(start=date_one, end=date_seven).to_list()
     date_ranges = [str(d.strftime('%Y-%m-%d')) for d in range]
     forecast_list = {date: value for date, value in zip(date_ranges, sobs)}
