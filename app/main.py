@@ -35,65 +35,65 @@ def read_root():
 def healthcheck():
     return 'Welcome!'
 
-@app.get("/sales/national/")
-def forecasting(
-    date: str
-    ):
-    date_input = datetime.strptime(date, "%Y-%m-%d")
-    date_seven=(date_input + timedelta(days=7)).strftime('%Y-%m-%d')
-    date_one=(date_input + timedelta(days=1)).strftime('%Y-%m-%d')
-    sobs = SARI_model.get_prediction(start=date_one, end=date_seven).predicted_mean
-    range = pd.date_range(start=date_one, end=date_seven).to_list()
-    date_ranges = [str(d.strftime('%Y-%m-%d')) for d in range]
-    forecast_list = {date: value for date, value in zip(date_ranges, sobs)}
-    return JSONResponse(forecast_list)
+# @app.get("/sales/national/")
+# def forecasting(
+#     date: str
+#     ):
+#     date_input = datetime.strptime(date, "%Y-%m-%d")
+#     date_seven=(date_input + timedelta(days=7)).strftime('%Y-%m-%d')
+#     date_one=(date_input + timedelta(days=1)).strftime('%Y-%m-%d')
+#     sobs = SARI_model.get_prediction(start=date_one, end=date_seven).predicted_mean
+#     range = pd.date_range(start=date_one, end=date_seven).to_list()
+#     date_ranges = [str(d.strftime('%Y-%m-%d')) for d in range]
+#     forecast_list = {date: value for date, value in zip(date_ranges, sobs)}
+#     return JSONResponse(forecast_list)
 
-def format_features_predictive(
-    date: str,
-    item_id: str,
-    store_id: str,
-    is_event: int
-    ):
-    return {
-        'date': [date],
-        'item_id': [item_id],
-        'store_id': [store_id],
-        'is_event': [is_event]
-    }
+# def format_features_predictive(
+#     date: str,
+#     item_id: str,
+#     store_id: str,
+#     is_event: int
+#     ):
+#     return {
+#         'date': [date],
+#         'item_id': [item_id],
+#         'store_id': [store_id],
+#         'is_event': [is_event]
+#     }
 
-def predictive_model(item_id):
-    if 'FOODS_1' in item_id:
-        return FOODS_1_df_dt_pipeline
-    elif 'FOODS_2' in item_id:
-        return FOODS_2_df_dt_pipeline
-    elif 'FOODS_3' in item_id:
-        return FOODS_3_df_dt_pipeline
-    elif 'HOBBIES_1' in item_id:
-        return HOBBIES_1_df_dt_pipeline
-    elif 'HOBBIES_2' in item_id:
-        return HOBBIES_2_df_dt_pipeline
-    elif 'HOUSEHOLD_1' in item_id:
-        return HOUSEHOLD_1_df_dt_pipeline
-    elif 'HOUSEHOLD_2' in item_id:
-        return HOUSEHOLD_2_df_dt_pipeline
+# def predictive_model(item_id):
+#     if 'FOODS_1' in item_id:
+#         return FOODS_1_df_dt_pipeline
+#     elif 'FOODS_2' in item_id:
+#         return FOODS_2_df_dt_pipeline
+#     elif 'FOODS_3' in item_id:
+#         return FOODS_3_df_dt_pipeline
+#     elif 'HOBBIES_1' in item_id:
+#         return HOBBIES_1_df_dt_pipeline
+#     elif 'HOBBIES_2' in item_id:
+#         return HOBBIES_2_df_dt_pipeline
+#     elif 'HOUSEHOLD_1' in item_id:
+#         return HOUSEHOLD_1_df_dt_pipeline
+#     elif 'HOUSEHOLD_2' in item_id:
+#         return HOUSEHOLD_2_df_dt_pipeline
 
-@app.get("/sales/stores/items/")
-def predict(
-    date: str,
-    item_id: str,
-    store_id: str,
-    is_event: int =0
-    ):
-    features = format_features_predictive(
-        date,
-        item_id,
-        store_id,
-        is_event
-        )
-    obs = pd.DataFrame(features)
-    obs['date'] = pd.to_datetime(obs['date'])
-    obs['day_of_month'] = obs['date'].dt.day
-    obs['month_of_year'] = obs['date'].dt.month
-    obs['day_of_week'] = obs['date'].dt.dayofweek
-    pred = predictive_model(item_id).predict(obs.drop(columns=['date']))
-    return JSONResponse(pred.tolist())
+# @app.get("/sales/stores/items/")
+# def predict(
+#     date: str,
+#     item_id: str,
+#     store_id: str,
+#     is_event: int =0
+#     ):
+#     features = format_features_predictive(
+#         date,
+#         item_id,
+#         store_id,
+#         is_event
+#         )
+#     obs = pd.DataFrame(features)
+#     obs['date'] = pd.to_datetime(obs['date'])
+#     obs['day_of_month'] = obs['date'].dt.day
+#     obs['month_of_year'] = obs['date'].dt.month
+#     obs['day_of_week'] = obs['date'].dt.dayofweek
+#     pred = predictive_model(item_id).predict(obs.drop(columns=['date']))
+#     return JSONResponse(pred.tolist())
