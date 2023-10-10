@@ -39,13 +39,13 @@ def healthcheck():
 def forecasting(
     date: str
     ):
-    date_input = datetime.strptime(date, "%Y-%m-%d")
-    date_seven=(date_input + timedelta(days=7)).strftime('%Y-%m-%d')
-    date_one=(date_input + timedelta(days=1)).strftime('%Y-%m-%d')
-    sobs = SARI_model.get_prediction(start=date_one, end=date_seven).predicted_mean
-    range = pd.date_range(start=date_one, end=date_seven).to_list()
-    date_ranges = [str(d.strftime('%Y-%m-%d')) for d in range]
     try:
+      date_input = datetime.strptime(date, "%Y-%m-%d")
+      date_seven=(date_input + timedelta(days=7)).strftime('%Y-%m-%d')
+      date_one=(date_input + timedelta(days=1)).strftime('%Y-%m-%d')
+      sobs = SARI_model.get_prediction(start=date_one, end=date_seven).predicted_mean
+      range = pd.date_range(start=date_one, end=date_seven).to_list()
+      date_ranges = [str(d.strftime('%Y-%m-%d')) for d in range]
       forecast_list = {date: value for date, value in zip(date_ranges, sobs)}
       return JSONResponse(forecast_list)
     except ValueError as error_mes:
@@ -90,18 +90,18 @@ def predict(
     store_id: str,
     is_event: int =0
     ):
-    features = format_features_predictive(
-        date,
-        item_id,
-        store_id,
-        is_event
-        )
-    obs = pd.DataFrame(features)
-    obs['date'] = pd.to_datetime(obs['date'])
-    obs['day_of_month'] = obs['date'].dt.day
-    obs['month_of_year'] = obs['date'].dt.month
-    obs['day_of_week'] = obs['date'].dt.dayofweek
     try:
+      features = format_features_predictive(
+          date,
+          item_id,
+          store_id,
+          is_event
+          )
+      obs = pd.DataFrame(features)
+      obs['date'] = pd.to_datetime(obs['date'])
+      obs['day_of_month'] = obs['date'].dt.day
+      obs['month_of_year'] = obs['date'].dt.month
+      obs['day_of_week'] = obs['date'].dt.dayofweek
       pred = predictive_model(item_id).predict(obs.drop(columns=['date']))
       return JSONResponse(pred.tolist())
     except ValueError as error_mes:
