@@ -48,12 +48,8 @@ def forecasting(
       date_ranges = [str(d.strftime('%Y-%m-%d')) for d in range]
       forecast_list = {date: value for date, value in zip(date_ranges, sobs)}
       return JSONResponse(forecast_list)
-    except ValueError as error_mes:
-        if str(error_mes) == "Internal Server Error":
-            raise HTTPException(status_code=500, detail="Input the correct format please")
-        else:
-            raise HTTPException(status_code=404, detail="Wrong pages")
-
+    except:
+        raise HTTPException(status_code=500, detail="Input the correct format please")
 def format_features_predictive(
     date: str,
     item_id: str,
@@ -104,8 +100,5 @@ def predict(
       obs['day_of_week'] = obs['date'].dt.dayofweek
       pred = predictive_model(item_id).predict(obs.drop(columns=['date']))
       return JSONResponse(pred.tolist())
-    except ValueError as error_mes:
-        if str(error_mes) == "Internal Server Error":
-            raise HTTPException(status_code=500, detail="Input the correct format please")
-        else:
-            raise HTTPException(status_code=404, detail="Wrong pages")
+    except:
+      raise HTTPException(status_code=500, detail="Input the correct format please")
