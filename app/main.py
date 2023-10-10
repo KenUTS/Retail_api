@@ -7,15 +7,15 @@ import pandas as pd
 
 app = FastAPI()
 
-SARI_model = load('../models/SARIMAX.joblib')
+# SARI_model = load('../models/SARIMAX.joblib')
 
-FOODS_1_df_dt_pipeline = load('../models/FOODS_1_df_dt_pipeline.joblib')
-FOODS_2_df_dt_pipeline = load('../models/FOODS_2_df_dt_pipeline.joblib')
-FOODS_3_df_dt_pipeline = load('../models/FOODS_3_df_dt_pipeline.joblib')
-HOBBIES_1_df_dt_pipeline = load('../models/HOBBIES_1_df_dt_pipeline.joblib')
-HOBBIES_2_df_dt_pipeline = load('../models/HOBBIES_2_df_dt_pipeline.joblib')
-HOUSEHOLD_1_df_dt_pipeline = load('../models/HOUSEHOLD_1_df_dt_pipeline.joblib')
-HOUSEHOLD_2_df_dt_pipeline = load('../models/HOUSEHOLD_2_df_dt_pipeline.joblib')
+# FOODS_1_df_dt_pipeline = load('../models/FOODS_1_df_dt_pipeline.joblib')
+# FOODS_2_df_dt_pipeline = load('../models/FOODS_2_df_dt_pipeline.joblib')
+# FOODS_3_df_dt_pipeline = load('../models/FOODS_3_df_dt_pipeline.joblib')
+# HOBBIES_1_df_dt_pipeline = load('../models/HOBBIES_1_df_dt_pipeline.joblib')
+# HOBBIES_2_df_dt_pipeline = load('../models/HOBBIES_2_df_dt_pipeline.joblib')
+# HOUSEHOLD_1_df_dt_pipeline = load('../models/HOUSEHOLD_1_df_dt_pipeline.joblib')
+# HOUSEHOLD_2_df_dt_pipeline = load('../models/HOUSEHOLD_2_df_dt_pipeline.joblib')
 
 project_obs= "The assigned objective is to develop two distinct models that will be implemented as APIs in a production environment. This study proposes the development of a prediction model utilising a Machine Learning algorithm to effectively forecast the sales income of a particular item within a designated retailer on a specific day. This study proposes the use of a time-series analysis method to develop a forecasting model for predicting the aggregate sales income of all stores and items throughout the forthcoming seven-day period."
 
